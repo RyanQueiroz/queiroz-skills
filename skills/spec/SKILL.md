@@ -69,6 +69,21 @@ The definition of done belongs to the user. Show, in Portuguese:
 - The "Como provamos" scenarios, in full, and ask the user to confirm or correct them.
 - The assumptions and open questions.
 
-A spec without confirmed "Como provamos" scenarios is not ready. Apply the user's corrections to the file. Then stop: the next step is the user telling `queiroz:mode` to implement `.queiroz/<feature>/spec.md`.
+A spec without confirmed "Como provamos" scenarios is not ready. Apply the user's corrections to the file and show the changed parts again.
 
-**Done when** the user confirmed the scenarios, the file reflects their corrections, and no open question blocks the spec.
+**Hand off.** Approval is any reply that reads as the user accepting the spec as it stands, in their own words ("ficou bom", "fechado", "é isso", "aprovado"). A correction, a question, or a "quase" is not approval: apply it and show the changed part again.
+
+On approval, do not start implementing. Ask where to build it, with `AskUserQuestion` when available:
+
+- **Nova sessão, contexto limpo (recomendado):** this conversation is full of discussion the implementation does not need. Hand over a ready prompt. If the environment has a tool to start a new session, start one with it; otherwise give the prompt in a code block to paste into a new session opened in this repository:
+
+  ```
+  /queiroz:mode <absolute path>/.queiroz/<feature>/spec.md
+  Spec aprovada em <data>. Implemente numa worktree nova a partir da main.
+  ```
+
+- **Aqui mesmo:** invoke `queiroz:mode` with the spec path in this session.
+
+Either way, `queiroz:mode` creates its own worktree and branch from the default branch.
+
+**Done when** the user approved the spec, the file reflects their corrections, no open question blocks it, and the user chose where to implement (a new session got the prompt, or `queiroz:mode` started here).

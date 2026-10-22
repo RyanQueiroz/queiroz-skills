@@ -1,6 +1,6 @@
 ---
 name: mode
-description: Queiroz's executor. Takes a spec (or a bug) and delivers it verified on a branch, orchestrating parallel subagents. Use when the user says "queiroz:mode", "/queiroz:mode", or asks queiroz:mode to implement a spec or fix a bug.
+description: Queiroz's executor. Takes a spec (or a bug) and delivers it verified on a branch, orchestrating parallel subagents. Use when the user says "queiroz:mode", "/queiroz:mode", asks queiroz:mode to implement a spec or fix a bug, or when the user chose to implement an approved spec here.
 ---
 
 # queiroz:mode
@@ -20,7 +20,7 @@ Keep the run's state in files so any subagent, or you after a `/compact`, can pi
 
 Everything a feature produces lives in its folder. Nothing goes to a sibling `.queiroz/evidence/` or a loose file next to it.
 
-If `.queiroz/<feature>/` already exists, resume: read `log.md` and every ticket's status, then continue from the first step not done.
+If `.queiroz/<feature>/log.md` already exists (a run already started), resume: read `log.md` and every ticket's status, then continue from the first step not done.
 
 ## Rules for the whole run
 
@@ -41,10 +41,14 @@ If `.queiroz/<feature>/` already exists, resume: read `log.md` and every ticket'
 ## 2. Preconditions
 
 1. **`verify` exists** at `.claude/skills/verify/`. Missing → ✋ say in one line "Este projeto não tem `verify`; vou rodar o `queiroz:setup` antes. Posso?" and wait. On OK, run `queiroz:setup`.
-2. **Branch.** The working tree is clean (otherwise stop and report what is uncommitted). Create `queiroz/<feature>` from the current base branch.
+2. **Worktree.** Every run gets its own worktree, so the user's checkout (and anything uncommitted in it) stays untouched:
+   - Base: the remote default branch, not the current one. `git fetch origin`, then `git symbolic-ref --short refs/remotes/origin/HEAD` (usually `origin/main`).
+   - `git worktree add ../<repo>-<feature> -b queiroz/<feature> <base>`. If the branch already exists, reuse its worktree and resume.
+   - Move `.queiroz/<feature>/` into the worktree's `.queiroz/`: the run's files live with the work. Make sure `.queiroz/` is in `.git/info/exclude` (shared by every worktree of the repo).
+   - From here on, every command and every subagent works in that worktree path.
 3. **Doctor.** Run the `verify` skill's Doctor once.
 
-**Done when** `verify` exists, the branch is checked out, and Doctor passed.
+**Done when** `verify` exists, the worktree is on `queiroz/<feature>`, the feature folder is inside it, and Doctor passed.
 
 ## 3. Understand the blast radius
 
@@ -112,7 +116,7 @@ Each confirmed finding becomes a new ticket and goes through step 5. Then rerun 
 
 Write the report in Portuguese, following `unslop`, leading with the result:
 
-- What was delivered, and the branch name.
+- What was delivered, the branch name, and the worktree path.
 - Commits, one per ticket.
 - Each "Como provamos" scenario with its evidence path.
 - Blast radius: the safety facts proven, and anything still "não provado".
