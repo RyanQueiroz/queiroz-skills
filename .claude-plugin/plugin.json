@@ -1,0 +1,9 @@
+{
+  "name": "queiroz",
+  "version": "0.3.0",
+  "description": "Ryan Queiroz's skill harness: pstack's judgment, osmani's process, mattpocock's lightness. Force proportional to the task.",
+  "author": {
+    "name": "Ryan de Oliveira Queiroz"
+  },
+  "license": "MIT"
+}

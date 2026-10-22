@@ -1,0 +1,13 @@
+{
+  "name": "queiroz",
+  "owner": {
+    "name": "Ryan de Oliveira Queiroz"
+  },
+  "plugins": [
+    {
+      "name": "queiroz",
+      "source": "./"
+    }
+  ],
+  "description": "Ryan Queiroz's skill harness for Claude Code."
+}
