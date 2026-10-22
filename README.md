@@ -25,6 +25,7 @@ claude plugin update queiroz@queiroz
 - **Plan:** `idea-refine`, `grill`, `spec`, `research`, `prototype`.
 - **Measure:** `measure`, `perf` (+ agent `web-perf-auditor`).
 - **Deliver:** `pr`, `ci`, `observability`.
+- **Refactor:** `refactor` (audit with DRY, KISS, YAGNI, dead code, decoupling and modernization lenses, then transform with characterization tests and proven parity).
 - **Understand and maintain:** `how`, `why`, `bro`, `teach`, `recall`, `reflect`.
 
 Models per role: [models.md](models.md), overridable in `~/.claude/queiroz-models.md`.

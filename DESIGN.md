@@ -40,6 +40,10 @@ Construído devagar, uma decisão por vez. Só entra aqui o que foi decidido.
     | `reviewer` | Revisão cega do diff contra a spec | `sonnet` |
     | `blast` | Análise de blast radius com prova | `sonnet` |
     | `investigator` | Investigações do `why` (git, PRs, issues, docs) | `sonnet` |
+    | `refactor lens` | Uma lente de análise no `refactor` | `opus @high` |
+    | `refactor swarm` | Buscas de fatos para as lentes | `haiku` |
+    | `fact checker` | Confere cada fato do registro | `haiku` |
+    | `refactor implementer` | Testes de caracterização e tickets do `refactor` | `opus @high` |
     | `researcher` | Pesquisa em fonte primária do `research` | `sonnet` |
 
     O orquestrador é a própria sessão.
@@ -111,6 +115,14 @@ Construído devagar, uma decisão por vez. Só entra aqui o que foi decidido.
 
 24. **O `queiroz:mode` não é roteador.** Ele só liga quando a pessoa o chama para implementar (uma spec, ou um bug). Ele não classifica prompts nem escolhe skills avulsas. Fora dele ficam o núcleo leve e as skills que a pessoa chama na mão. `research`, `measure` e `prototype` ficam avulsas.
 
+25. **`refactor`: auditar e refatorar sem mudar comportamento, com orquestração própria e pesada.** Não passa pelo `queiroz:mode`. A pessoa pode parar depois do diagnóstico.
+    - **Papéis:** a sessão orquestra e não lê código em massa. As lentes (`refactor lens`) e a implementação (`refactor implementer`) rodam em **Opus com esforço alto**. As buscas são de **enxames de Haiku** (`refactor swarm`), e um `fact checker` Haiku separado confere cada fato.
+    - **Contra alucinação:** todo fato vai para o `facts.tsv` com a fonte (arquivo:linha citado ou comando e saída), e outro agente confere. Achado só usa fato conferido. Código morto exige duas buscas independentes vazias.
+    - **Prova com números:** métricas de antes e depois (complexidade ciclomática e linhas por função com `lizard`, duplicação com `jscpd`, linhas, arquivos acima de 1000, acoplamento, ciclos e dependências). Cada achado declara o delta previsto, calculado sobre as métricas de antes. O ticket é revertido se o número medido não cair.
+    - **Fases:** 0 mapa → 1 análise pelas lentes (DRY, KISS, YAGNI, código morto, desacoplamento, modernização e estrutura, mais correção só para a lista de bugs) → 2 prova dos achados → ✋ a pessoa escolhe → 3 blindagem (testes de caracterização com checagem por mutação) → 4 transformação em paralelo → 5 paridade, revisão cega, métricas de depois e relatório.
+    - **Aviso de custo antes de começar:** conta arquivos e linhas, estima os tokens do mapa e da análise e pergunta antes de gastar, sempre que o alcance for o codebase inteiro. Oferece limitar a uma pasta ou fazer só a auditoria.
+    - Bug achado no caminho vai para a lista de bugs, não é corrigido. Subir versão de runtime é migração, com OK.
+
 ## Peças da v1
 
 O `queiroz:mode` **não** usa tudo. Como no poteto-mode, a maioria das skills é avulsa: existe no pacote, e a pessoa chama quando quer.
@@ -131,11 +143,11 @@ O `queiroz:mode` **não** usa tudo. Como no poteto-mode, a maioria das skills é
 | `unslop` | Relatório final |
 | `queiroz:design`, `interrogate` | Só sugere; roda com OK |
 
-**Avulsas (a pessoa chama):** `idea-refine`, `grill`, `spec`, `prototype`, `research`, `measure`, `perf` + agente `web-perf-auditor`, `ci`, `pr`, `observability`, `how`, `why`, `bro`, `teach`, `recall`, `reflect`. Também `queiroz:blast`, `debug`, `queiroz:design` e `interrogate` podem ser chamadas sozinhas.
+**Avulsas (a pessoa chama):** `refactor`, `idea-refine`, `grill`, `spec`, `prototype`, `research`, `measure`, `perf` + agente `web-perf-auditor`, `ci`, `pr`, `observability`, `how`, `why`, `bro`, `teach`, `recall`, `reflect`. Também `queiroz:blast`, `debug`, `queiroz:design` e `interrogate` podem ser chamadas sozinhas.
 
 **Config:** `~/.claude/queiroz-models.md`.
 
-São 28 skills, 1 agente e 1 arquivo de config.
+São 29 skills, 1 agente e 1 arquivo de config.
 
 ## Fluxo completo
 
